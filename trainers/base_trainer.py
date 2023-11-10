@@ -72,3 +72,32 @@ class BaseTrainer:
         predictions = predictions.squeeze()
 
         return test_targets, predictions
+    
+    def predict_future(self, test_data, n_steps, scaler=None):
+        """
+        Predict future values given the last sequences.
+
+        Parameters:
+        - n_steps (int): Number of steps to predict into the future.
+
+        Returns:
+        - predictions (numpy array): Predicted values for the next `n_steps`.
+        """
+        sequence_length = self.model.input_size
+
+        last_sequences = test_data['Receipt_Count'].values[-sequence_length:]
+
+
+        predictions = []
+        with torch.no_grad():
+            for _ in range(n_steps):
+                input_sequence = torch.FloatTensor(last_sequences).view(1, -1)
+
+                output = self.model(input_sequence)
+                prediction = output.item()
+                predictions.append(prediction)
+
+                last_sequences = np.append(last_sequences[1:], prediction)
+        if scaler!=None:
+            predictions = scaler.inverse_transform(np.array(predictions).reshape(-1, 1)).flatten()
+        return predictions

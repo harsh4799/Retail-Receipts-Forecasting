@@ -1,54 +1,64 @@
 import numpy as np
-class CustomLinearRegression:
-    def __init__(self):
-        """
-        Initialize a CustomLinearRegression object.
+import torch.nn as nn
+class CustomLinearRegression(nn.Module):
+    def __init__(self, input_size, output_size):
+        super(CustomLinearRegression, self).__init__()
+        self.input_size = input_size
+        self.linear = nn.Linear(input_size, output_size)
 
-        Attributes
-        ----------
-        coefficients : numpy array
-            Coefficients of the linear regression model.
-        """
-        self.coefficients = None
+    def forward(self, x):
+        return self.linear(x)
 
-    def fit(self, X, y):
-        """
-        Fit the linear regression model using the method of least squares.
+# class CustomLinearRegression:
+#     def __init__(self):
+#         """
+#         Initialize a CustomLinearRegression object.
 
-        Parameters
-        ----------
-        X : numpy array
-            Input features.
-        y : numpy array
-            Target variable.
-        """
-        # Intercept term
-        ones_column = np.ones(X.shape[0]).reshape(-1, 1)
-        X = np.concatenate((ones_column, X), axis=1)
+#         Attributes
+#         ----------
+#         coefficients : numpy array
+#             Coefficients of the linear regression model.
+#         """
+#         self.coefficients = None
 
-        # Coefficients using the least squares formula
-        self.coefficients = np.linalg.inv(X.T @ X) @ X.T @ y
+#     def fit(self, X, y):
+#         """
+#         Fit the linear regression model using the method of least squares.
 
-    def predict(self, X):
-        """
-        Make predictions using the trained linear regression model.
+#         Parameters
+#         ----------
+#         X : numpy array
+#             Input features.
+#         y : numpy array
+#             Target variable.
+#         """
+#         # Intercept term
+#         ones_column = np.ones(X.shape[0]).reshape(-1, 1)
+#         X = np.concatenate((ones_column, X), axis=1)
 
-        Parameters
-        ----------
-        X : numpy array
-            Input features for prediction.
+#         # Coefficients using the least squares formula
+#         self.coefficients = np.linalg.inv(X.T @ X) @ X.T @ y
 
-        Returns
-        -------
-        numpy array
-            Predicted values.
-        """
-        # Intercept Term
-        ones_column = np.ones(X.shape[0]).reshape(-1, 1)
-        X = np.concatenate((ones_column, X), axis=1)
+#     def predict(self, X):
+#         """
+#         Make predictions using the trained linear regression model.
 
-        predictions = X @ self.coefficients
-        return predictions
+#         Parameters
+#         ----------
+#         X : numpy array
+#             Input features for prediction.
+
+#         Returns
+#         -------
+#         numpy array
+#             Predicted values.
+#         """
+#         # Intercept Term
+#         ones_column = np.ones(X.shape[0]).reshape(-1, 1)
+#         X = np.concatenate((ones_column, X), axis=1)
+
+#         predictions = X @ self.coefficients
+#         return predictions
 
 if __name__ == '__main__': 
     # Testing our model out
