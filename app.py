@@ -13,11 +13,11 @@ import numpy as np
 # Set random seed for reproducibility
 seed = 8989898
 torch.manual_seed(seed)
-if torch.cuda.is_available():
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = False
+# if torch.cuda.is_available():
+#     torch.cuda.manual_seed(seed)
+#     torch.cuda.manual_seed_all(seed)
+# torch.backends.cudnn.deterministic = True
+# torch.backends.cudnn.benchmark = False
 np.random.seed(seed)
 
 # Streamlit app
@@ -106,16 +106,15 @@ def main():
         fig.add_trace(go.Scatter(x=test_data['Date'].iloc[sequence_length:], y=test_targets, mode='lines', name='Actual'))
         fig.add_trace(go.Scatter(x=test_data['Date'].iloc[sequence_length:], y=predictions, mode=f'lines', name=f'Predicted ({model_option})'))
         fig.add_trace(go.Scatter(x=pd.date_range(test_data['Date'].iloc[-1] + pd.Timedelta(days=1), periods=365), y=future_predictions, mode='lines', name='Future Predictions'))
-        fig.update_layout(width=1400, height=600)
-
-
-        st.plotly_chart(fig)
 
         # Calculate Mean Absolute Error
         mae_calculator = MeanAbsoluteError()
         mae_value = mae_calculator(test_targets, predictions)
-        st.write(f"Mean Absolute Error: {mae_value:.2f}")
-        
+
+        fig.update_layout(width=1400, height=600, title=dict(text=(f"Mean Absolute Error: {mae_value:.2f}"), font=dict(size=15), automargin=True, yref='paper'))
+
+        st.plotly_chart(fig)
+
 
 if __name__ == "__main__":
     main()

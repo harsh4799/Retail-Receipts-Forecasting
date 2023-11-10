@@ -61,7 +61,6 @@ class BaseTrainer:
                 # Forward pass
                 output = self.model(batch_x)
                 predictions.append(output)
-        print(len(predictions))
         # Reverse scaling for evaluation
         test_targets = test_data['Receipt_Count'].iloc[self.model.input_size:].values.reshape(-1, 1)
         predictions = np.array(predictions).reshape(-1, 1)
