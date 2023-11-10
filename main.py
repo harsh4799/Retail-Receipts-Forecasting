@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from sklearn.preprocessing import MinMaxScaler
 from models import MLP, LSTM
 from dataset import TimeSeriesDataset
 import pandas as pd
@@ -10,6 +9,7 @@ import plotly.graph_objects as go
 from evaluation import MeanAbsoluteError
 import random
 import numpy as np
+from utils import MinMaxScaler
 
 seed = 8989898
 torch.manual_seed(seed)
