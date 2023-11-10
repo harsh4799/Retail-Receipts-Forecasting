@@ -2,13 +2,13 @@ import streamlit as st
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
-from sklearn.preprocessing import MinMaxScaler
 from models import CustomLinearRegression, MLP, LSTM
 from dataset import TimeSeriesDataset
 from trainers import BaseTrainer
 from evaluation import MeanAbsoluteError
-import plotly.express as px
 import plotly.graph_objects as go
+from utils import MinMaxScaler
+import numpy as np
 
 # Set random seed for reproducibility
 seed = 8989898
@@ -18,11 +18,12 @@ if torch.cuda.is_available():
     torch.cuda.manual_seed_all(seed)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
-import numpy as np
 np.random.seed(seed)
 
 # Streamlit app
 def main():
+    st.set_page_config(layout="wide")
+
     st.title("Time Series Prediction App")
 
     # Upload data
@@ -33,7 +34,6 @@ def main():
 
         # Load data
         df = pd.read_csv(uploaded_file)
-        # df = pd.read_csv('./data/data_daily.csv')
         df = df.rename(columns={'# Date': 'Date'})
         df['Date'] = pd.to_datetime(df['Date'])
         df = df[['Receipt_Count', 'Date']]  
@@ -49,13 +49,11 @@ def main():
         train_size = int(len(df) * 0.8)
         train_data, test_data = df.iloc[:train_size], df.iloc[train_size:]
 
+        # Hyperparameters
         sequence_length = 30
-
         hidden_size = 64
         output_size = 1
-
         lstm_num_layers = 1
-
         batch_size = 16
 
 
@@ -92,11 +90,12 @@ def main():
         trainer = BaseTrainer(model, torch.nn.MSELoss(), optimizer, train_loader, test_loader_model)  # You can provide test_loader here if needed
 
         # Train the model
-        st.subheader("Training the Model")
-        trainer.train()  # Adjust num_epochs as needed
+        header_placeholder = st.empty()
+        header_placeholder.subheader("Training the Model")  
+        trainer.train()  
 
         # Evaluation
-        st.subheader("Model Evaluation")
+        header_placeholder.subheader("Model Evaluation")
         test_targets, predictions = trainer.evaluate(test_data=test_data, scaler=scaler)
 
 
@@ -105,8 +104,9 @@ def main():
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=test_data['Date'].iloc[sequence_length:], y=test_targets, mode='lines', name='Actual'))
-        fig.add_trace(go.Scatter(x=test_data['Date'].iloc[sequence_length:], y=predictions, mode='lines', name='Predicted (MLP)'))
+        fig.add_trace(go.Scatter(x=test_data['Date'].iloc[sequence_length:], y=predictions, mode=f'lines', name=f'Predicted ({model_option})'))
         fig.add_trace(go.Scatter(x=pd.date_range(test_data['Date'].iloc[-1] + pd.Timedelta(days=1), periods=365), y=future_predictions, mode='lines', name='Future Predictions'))
+        fig.update_layout(width=1400, height=600)
 
 
         st.plotly_chart(fig)
@@ -114,7 +114,7 @@ def main():
         # Calculate Mean Absolute Error
         mae_calculator = MeanAbsoluteError()
         mae_value = mae_calculator(test_targets, predictions)
-        st.write(f"Mean Absolute Error: {mae_value:.4f}")
+        st.write(f"Mean Absolute Error: {mae_value:.2f}")
         
 
 if __name__ == "__main__":
