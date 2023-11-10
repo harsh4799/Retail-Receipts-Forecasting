@@ -6,20 +6,24 @@ This application serves as a forecasting tool that predicts daily receipt counts
 
 The provided dataset is a time-series record of receipt scans over the course of the year 2021. It consists of two fields: `#Date` and `Receipt_Count`.
 
+## Methodology 
+To build a predictive dataset for time series analysis, I employed a methodology focused on capturing the temporal dynamics of the data. First, I collected a comprehensive time series dataset spanning relevant variables. Next, I crafted a feature set that includes the last 'n' datapoints as inputs, ensuring a contextual understanding of the temporal patterns. These features serve as the basis for training a predictive model to forecast the next data point in the sequence. The model's ability to learn from historical trends enables it to make informed predictions, making the dataset a valuable resource for time series forecasting tasks.
+
+
 
 ## Application Components
 
-### Exploratory Data Analysis
+### **Exploratory Data Analysis**
 Checkout : ```notebooks/Exploratory_Data_Analysis.ipynb```
 
-### Backend: PyTorch Model
+### **Modelling**
 - **Data Preprocessing:** The application includes preprocessing steps where the data was normalized.
 - **Training and Inference:** We have 3 models to perform training & inference on: 
     - Linear Regression Model
     - Simple MLP Model
     - LSTM Model
 
-### Frontend: Streamlit Interface
+### **Frontend: Streamlit Interface**
 - **Data Input:** The interface accepts data uploads in a specified format for visualization and prediction.
 - **Data Visualization:** The application provides insights into the receipt count variations throughout 2021 and forecasts for 2022.
 
