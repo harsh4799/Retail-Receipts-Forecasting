@@ -2,7 +2,7 @@
 
 This application serves as a forecasting tool that predicts daily receipt counts for the year 2022 using machine learning techniques, based on receipt data from 2021.
 
-**Please refer to [Documentation](documentation.md) for more in-depth explanations about the code, scalability & modularity aspects.**
+**Please refer to [Documentation](DOCUMENTATION.md) for more in-depth explanations about the code, scalability & modularity aspects.**
 
 ## Data Description
 
